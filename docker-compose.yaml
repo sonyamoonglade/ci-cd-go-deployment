@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+
+  application:
+    image: "sonyamoonglade/ci_cd_app:latest"
+    build:
+      context: "../ci_cd_test"
+      dockerfile: "./docker/Dockerfile"
+    environment:
+      - DB_HOST
+      - DB_PWD
+      - DB_PORT
+      - DB_USER
+      - DB_NAME
+    ports:
+      - "5000:5000"
+    networks:
+      - inet
+      - exnet
+
+  db:
+    image: "postgres"
+    container_name: db
+    environment:
+      - DB_PWD
+      - DB_USER
+      - DB_NAME
+      - POSTGRES_PASSWORD=${DB_PWD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    restart: on-failure
+    depends_on:
+      - stage-migrations
+    networks:
+      - inet
+  
+  stage-migrations:
+    image: "migrate/migrate"
+    build:
+      context: "../ci_cd_test"
+    volumes:
+      - ./migrations:/migrations
+    environment:
+      - DATABASE_URL
+    command:
+     ["migrate", "-path", "./migrations", "-database", "$(echo $DATABASE_URL)", "-verbose", "up"]
+    networks:
+      - inet
+    restart: on-failure
+
+
+  
+networks:
+  inet:
+    driver: bridge
+    external: false
+  exnet:
+    driver: bridge
+    external: true
