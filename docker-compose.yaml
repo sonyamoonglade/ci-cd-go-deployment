@@ -44,7 +44,7 @@ services:
     environment:
       - DATABASE_URL
     command:
-     ["migrate", "-path", "./migrations", "-database", "$(echo $DATABASE_URL)", "-verbose", "up"]
+     ["migrate", "-path", "./migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
     networks:
       - inet
     restart: on-failure
