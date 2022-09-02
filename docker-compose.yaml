@@ -14,7 +14,6 @@ services:
       - "5000:5000"
     networks:
       - inet
-      - exnet
 
   db:
     image: "postgres"
@@ -51,7 +50,4 @@ services:
 networks:
   inet:
     driver: bridge
-    external: false
-  exnet:
-    driver: bridge
-    external: true
+
