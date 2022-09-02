@@ -34,12 +34,14 @@ services:
   
   stage-migrations:
     image: "migrate/migrate"
+    depends_on:
+      - db
     volumes:
       - ./migrations:/migrations
     environment:
       - DATABASE_URL
     command:
-     ["migrate", "-path", "./migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
+     ["-path", "/migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
     networks:
       - inet
     restart: on-failure
