@@ -3,16 +3,13 @@ version: "3"
 services:
 
   application:
-    image: "sonyamoonglade/ci_cd_app:latest"
-    build:
-      context: "../ci_cd_test"
-      dockerfile: "./docker/Dockerfile"
+    image: "sonyamoonglade/ci_cd_app"
     environment:
-      - DB_HOST:${DB_HOST}
-      - DB_PWD:${DB_PWD}
-      - DB_PORT:${DB_PORT}
-      - DB_USER:${DB_USER}
-      - DB_NAME:${DB_NAME}
+      - DB_HOST
+      - DB_PWD
+      - DB_PORT
+      - DB_USER
+      - DB_NAME
     ports:
       - "5000:5000"
     networks:
@@ -23,6 +20,9 @@ services:
     image: "postgres"
     container_name: db
     environment:
+      - DB_PWD
+      - DB_USER
+      - DB_NAME
       - POSTGRES_PASSWORD=${DB_PWD}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
@@ -35,7 +35,7 @@ services:
   stage-migrations:
     image: "migrate/migrate"
     build:
-      context: "../ci_cd_test"
+      context: "../."
     volumes:
       - ./migrations:/migrations
     environment:
