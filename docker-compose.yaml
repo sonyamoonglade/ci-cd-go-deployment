@@ -27,8 +27,6 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
     restart: on-failure
-    depends_on:
-      - stage-migrations
     networks:
       - inet
   
@@ -41,7 +39,7 @@ services:
     environment:
       - DATABASE_URL
     command:
-     ["-path", "/migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
+      ["-path", "/migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
     networks:
       - inet
     restart: on-failure
