@@ -4,7 +4,12 @@ services:
 
   application:
     image: "sonyamoonglade/ci_cd_app"
-    env_file: "../.env"
+    environment:
+      - DB_PWD
+      - DB_USER
+      - DB_NAME
+      - DB_PORT
+      - DB_HOST
     ports:
       - "5000:5000"
     networks:
@@ -15,6 +20,9 @@ services:
     container_name: db
     env_file: "../.env"
     environment:
+      - DB_PWD
+      - DB_USER
+      - DB_NAME
       - POSTGRES_PASSWORD=${DB_PWD}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
@@ -26,10 +34,10 @@ services:
   
   stage-migrations:
     image: "migrate/migrate"
-
     volumes:
       - ./migrations:/migrations
-    env_file: "../.env"
+    environment:
+      - DATABASE_URL
     command:
      ["migrate", "-path", "./migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
     networks:
