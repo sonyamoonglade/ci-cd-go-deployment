@@ -4,9 +4,7 @@ services:
 
   application:
     image: "sonyamoonglade/ci_cd_app"
-    build:
-      context: "../."
-    env_file: ".env"
+    env_file: "../.env"
     ports:
       - "5000:5000"
     networks:
@@ -15,9 +13,7 @@ services:
   db:
     image: "postgres"
     container_name: db
-    build:
-      context: "../."
-    env_file: ".env"
+    env_file: "../.env"
     environment:
       - POSTGRES_PASSWORD=${DB_PWD}
       - POSTGRES_USER=${DB_USER}
@@ -30,11 +26,10 @@ services:
   
   stage-migrations:
     image: "migrate/migrate"
-    build:
-      context: "../."
+
     volumes:
       - ./migrations:/migrations
-    env_file: ".env"
+    env_file: "../.env"
     command:
      ["migrate", "-path", "./migrations", "-database", "$(echo ${DATABASE_URL})", "-verbose", "up"]
     networks:
